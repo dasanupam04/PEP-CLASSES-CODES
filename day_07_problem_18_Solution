@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+Node* nextGreaterLinkedList(Node* head) {
+    if (!head) return nullptr;
+
+    vector<Node*> nodes;
+    for (Node* curr = head; curr != nullptr; curr = curr->next)
+        nodes.push_back(curr);
+
+    int n = nodes.size();
+    vector<int> result(n, 0);
+    stack<int> st;
+
+    for (int i = 0; i < n; i++) {
+        int currentValue = nodes[i]->data;
+        while (!st.empty() && nodes[st.top()]->data < currentValue) {
+            result[st.top()] = currentValue;
+            st.pop();
+        }
+        st.push(i);
+    }
+
+    Node* dummy = new Node(0);
+    Node* tail = dummy;
+    for (int i = 0; i < n; i++) {
+        tail->next = new Node(result[i]);
+        tail = tail->next;
+    }
+    return dummy->next;
+}
+
+int main() {
+    Node* head = new Node(2);
+    head->next = new Node(1);
+    head->next->next = new Node(5);
+
+    Node* res = nextGreaterLinkedList(head);
+    for (Node* curr = res; curr != nullptr; curr = curr->next)
+        cout << curr->data << " ";
+    cout << endl;
+
+    return 0;
+}
