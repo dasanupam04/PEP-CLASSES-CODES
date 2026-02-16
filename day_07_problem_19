@@ -1,0 +1,68 @@
+Problem Summary
+- Scenario (Story Form):
+A warehouse cargo lift stacks containers vertically. Due to a mistake, containers are stacked in random order. Each container has a weight, and lighter ones should be closer to the top.
+- Restrictions:
+- No extra storage rooms
+- No helper lifts
+- No loops (for/while)
+- No extra data structures (arrays, lists, queues, stacks)
+- Only recursion and stack operations (push, pop, peek) are allowed
+- Task:
+Sort a stack of integers (representing container weights) so that the smallest element ends up on top. Sorting must be done in-place using recursion only.
+- Key Idea:
+Recursion acts as a hidden helper stack.
+- Phase 1: Recursively remove all elements until the stack is empty.
+- Phase 2: Insert each removed element back into the stack in its correct position.
+- Insertion Logic:
+- If stack is empty or top ≤ element → push element.
+- Else → pop top, recursively insert element, then push top back.
+- Example:
+Input (top first): 3, 1, 4, 2
+Output (sorted top first): 1, 2, 3, 4
+- Constraints:
+- Strictly recursive solution
+- No global containers
+- Sorting must happen in-place
+
+
+
+
+
+
+
+
+import java.util.Stack;
+
+public class RecursiveStackSort {
+
+    public static void sortStack(Stack<Integer> stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+        int top = stack.pop();
+        sortStack(stack);
+        insertInSortedOrder(stack, top);
+    }
+
+    private static void insertInSortedOrder(Stack<Integer> stack, int element) {
+        if (stack.isEmpty() || stack.peek() <= element) {
+            stack.push(element);
+            return;
+        }
+        int top = stack.pop();
+        insertInSortedOrder(stack, element);
+        stack.push(top);
+    }
+
+    public static void main(String[] args) {
+        Stack<Integer> stack = new Stack<>();
+        stack.push(3);
+        stack.push(1);
+        stack.push(4);
+        stack.push(2);
+
+        System.out.println("Original stack: " + stack);
+        sortStack(stack);
+        System.out.println("Sorted stack: " + stack);
+    }
+}
