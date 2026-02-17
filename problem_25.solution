@@ -1,0 +1,62 @@
+You are asked to determine the longest contiguous subarray of unique wristband IDs from a sequence of visitors entering a museum hallway.
+- Input: An array of integers representing wristband IDs in the order they were detected.
+- Output: A single integer — the maximum length of a contiguous segment where all IDs are distinct.
+
+Key Requirements
+- Must run in O(N) time.
+- Only one pass through the array is allowed.
+- No nested loops.
+- Efficient tracking of seen elements is required (e.g., HashMap).
+
+Core Idea
+This is a sliding window problem:
+- Use two pointers (left and right) to represent the current window.
+- Track the last seen index of each ID with a HashMap.
+- When a duplicate appears, move left forward to ensure uniqueness.
+- Update the maximum window size at each step.
+
+Examples
+- [1, 2, 3, 1, 2, 3, 4] → Output: 4 ([1, 2, 3, 4])
+- [5, 5, 5, 5] → Output: 1
+- [] → Output: 0
+- [1, 2, 3, 4, 5] → Output: 5
+
+
+
+
+
+
+import java.util.*;
+
+public class LongestUniqueStreak {
+    public static int longestUniqueStreak(int[] IDs) {
+        Map<Integer, Integer> lastSeen = new HashMap<>();
+        int maxLen = 0;
+        int left = 0;
+        
+        for (int right = 0; right < IDs.length; right++) {
+            int id = IDs[right];
+            if (lastSeen.containsKey(id) && lastSeen.get(id) >= left) {
+                left = lastSeen.get(id) + 1;
+            }
+            lastSeen.put(id, right);
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+        
+        return maxLen;
+    }
+
+    public static void main(String[] args) {
+        int[] test1 = {1, 2, 3, 1, 2, 3, 4};
+        int[] test2 = {5, 5, 5, 5};
+        int[] test3 = {};
+        int[] test4 = {1, 2, 3, 4, 5};
+        int[] test5 = {1, 2, 1, 2, 1};
+
+        System.out.println(longestUniqueStreak(test1)); // 4
+        System.out.println(longestUniqueStreak(test2)); // 1
+        System.out.println(longestUniqueStreak(test3)); // 0
+        System.out.println(longestUniqueStreak(test4)); // 5
+        System.out.println(longestUniqueStreak(test5)); // 2
+    }
+}
