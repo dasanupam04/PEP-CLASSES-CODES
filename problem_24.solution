@@ -1,0 +1,56 @@
+The problem is about detecting suspicious badge ID repeats within a restricted area monitoring system.
+- Scenario: Employees swipe their badges to enter. To prevent tailgating, the system must raise an alert if the same badge ID is scanned again within the last K entries.
+- Input:
+- An array of integers representing badge IDs in the order they were scanned.
+- An integer K representing the maximum allowed distance between two identical IDs.
+- Output:
+- Return true if any badge ID repeats within a distance of at most K.
+- Return false otherwise.
+- Constraints:
+- Must run in O(N) time.
+- Must stop immediately once a suspicious repeat is found (early exit).
+- Cannot re-check older entries repeatedly.
+- Requires efficient tracking of recent IDs (sliding window + fast lookup).
+Key Idea
+- Use a sliding window of size K to keep track of the last K badge IDs.
+- Use a HashSet for fast lookup.
+- As you process each ID:
+- If it’s already in the set → return true.
+- Otherwise, add it.
+- If the set grows beyond size K, remove the oldest ID.
+- If no repeat is found after processing all IDs → return false.
+Example
+- Input: IDs = [10, 20, 30, 10], K = 3
+- Output: true (because 10 repeats within 3 scans).
+This is essentially the Nearby Duplicate Detection problem, solved with a HashSet + sliding window approach.
+
+
+
+
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class SuspiciousRepeatAlert {
+    public static boolean hasSuspiciousRepeat(int[] ids, int k) {
+        Set<Integer> window = new HashSet<>();
+        for (int i = 0; i < ids.length; i++) {
+            if (window.contains(ids[i])) {
+                return true;
+            }
+            window.add(ids[i]);
+            if (window.size() > k) {
+                window.remove(ids[i - k]);
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(hasSuspiciousRepeat(new int[]{10, 20, 30, 10}, 3));
+        System.out.println(hasSuspiciousRepeat(new int[]{5, 6, 7, 5}, 2));
+        System.out.println(hasSuspiciousRepeat(new int[]{1, 2, 3, 4}, 1));
+        System.out.println(hasSuspiciousRepeat(new int[]{1, 5, 9, 1}, 3));
+        System.out.println(hasSuspiciousRepeat(new int[]{1, 2, 3, 1}, 2));
+    }
+}
